@@ -1,98 +1,223 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { FlatList, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+
+interface Pizza {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  image: string;
+  ingredients: string[];
+  fullDescription: string;
+  nutrition: {
+    calories: string;
+    carbs: string;
+    protein: string;
+    fat: string;
+  };
+}
+
+const pizzas: Pizza[] = [
+  {
+    id: '1',
+    name: 'Pizza Margherita',
+    price: '8.50',
+    description: 'Pomodoro, mozzarella, basilico',
+    image: '🍕',
+    ingredients: ['Pomodoro San Marzano', 'Mozzarella di bufala', 'Basilico fresco', 'Olio extravergine d\'oliva', 'Sale marino'],
+    fullDescription: 'Una deliziosa pizza con pomodoro, mozzarella fresca e basilico. Ingredienti selezionati e preparata nel forno a legna per una cottura perfetta.',
+    nutrition: {
+      calories: '250 kcal',
+      carbs: '30g',
+      protein: '12g',
+      fat: '8g'
+    }
+  },
+  {
+    id: '2',
+    name: 'Pizza Quattro Stagioni',
+    price: '12.00',
+    description: 'Prosciutto, funghi, carciofi, olive',
+    image: '🍕',
+    ingredients: ['Pomodoro', 'Mozzarella', 'Prosciutto cotto', 'Funghi porcini', 'Carciofi', 'Olive nere', 'Olio EVO'],
+    fullDescription: 'La classica quattro stagioni con i migliori ingredienti stagionali. Una combinazione perfetta di sapori che rappresenta tutte le stagioni.',
+    nutrition: {
+      calories: '280 kcal',
+      carbs: '32g',
+      protein: '15g',
+      fat: '10g'
+    }
+  },
+  {
+    id: '3',
+    name: 'Pizza Diavola',
+    price: '10.50',
+    description: 'Pomodoro, mozzarella, salame piccante',
+    image: '🍕',
+    ingredients: ['Pomodoro', 'Mozzarella', 'Salame piccante', 'Peperoncino', 'Olio piccante', 'Basilico'],
+    fullDescription: 'Per i palati più audaci! Una pizza dal sapore intenso con salame piccante e peperoncino. Ideale per chi ama i sapori forti.',
+    nutrition: {
+      calories: '270 kcal',
+      carbs: '29g',
+      protein: '14g',
+      fat: '11g'
+    }
+  },
+  {
+    id: '4',
+    name: 'Pizza Capricciosa',
+    price: '11.00',
+    description: 'Prosciutto, funghi, carciofi, olive nere',
+    image: '🍕',
+    ingredients: ['Pomodoro', 'Mozzarella', 'Prosciutto cotto', 'Funghi champignon', 'Carciofi sott\'olio', 'Olive nere', 'Capperi'],
+    fullDescription: 'Una pizza ricca e gustosa con una varietà di ingredienti pregiati. Ogni morso è una sorpresa di sapori mediterranei.',
+    nutrition: {
+      calories: '290 kcal',
+      carbs: '31g',
+      protein: '16g',
+      fat: '12g'
+    }
+  }
+];
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const cardBg = colorScheme === 'dark' ? '#1E1E1E' : 'white';
+  const mutedText = colorScheme === 'dark' ? '#9BA1A6' : '#666';
+  const accentBg = colorScheme === 'dark' ? '#2B2B2B' : '#FFF5F5';
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
+  const handlePizzaPress = (pizza: Pizza) => {
+    router.push({
+      pathname: '/pizza-details',
+      params: {
+        id: pizza.id,
+        name: pizza.name,
+        price: pizza.price,
+        description: pizza.description,
+        fullDescription: pizza.fullDescription,
+        ingredients: JSON.stringify(pizza.ingredients),
+        nutrition: JSON.stringify(pizza.nutrition),
+        image: pizza.image
+      }
+    });
+  };
+
+  const renderPizzaItem = ({ item }: { item: Pizza }) => (
+    <TouchableOpacity 
+      style={[styles.pizzaCard, { backgroundColor: cardBg, pointerEvents: 'auto' }]}
+      onPress={() => handlePizzaPress(item)}
+    >
+      <ThemedView style={[styles.pizzaImage, { backgroundColor: accentBg }]}>
+        <ThemedText style={styles.pizzaEmoji}>{item.image}</ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.pizzaInfo}>
+        <ThemedText type="subtitle" style={styles.pizzaName}>
+          {item.name}
+        </ThemedText>
+        <ThemedText style={[styles.pizzaDescription, { color: mutedText }]}>
+          {item.description}
+        </ThemedText>
+        <ThemedText style={styles.pizzaPrice}>
+          €{item.price}
         </ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+      <IconSymbol 
+        size={20} 
+        name="chevron.right" 
+        color="#8E8E93"
+        style={styles.chevron}
+      />
+    </TouchableOpacity>
+  );
+
+  return (
+    <ThemedView style={styles.container}>
+      <ThemedView style={styles.header}>
+        <ThemedText type="title" style={styles.title}>
+          Le nostre Pizze
+        </ThemedText>
+        <ThemedText style={styles.subtitle}>
+          Scegli la tua pizza preferita
         </ThemedText>
       </ThemedView>
-    </ParallaxScrollView>
+
+      <FlatList
+        data={pizzas}
+        renderItem={renderPizzaItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.pizzasList}
+        showsVerticalScrollIndicator={false}
+      />
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
+  header: {
+    padding: 20,
+    paddingTop: 60,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+  },
+  pizzasList: {
+    padding: 20,
+  },
+  pizzaCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    elevation: 3,
+  },
+  pizzaImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FFF5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  pizzaEmoji: {
+    fontSize: 30,
+  },
+  pizzaInfo: {
+    flex: 1,
+  },
+  pizzaName: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  pizzaDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  pizzaPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
+  },
+  chevron: {
+    marginLeft: 10,
   },
 });
