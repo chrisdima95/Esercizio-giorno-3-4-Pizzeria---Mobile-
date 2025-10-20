@@ -7,7 +7,7 @@ import { Alert, FlatList, Platform, StyleSheet, TouchableOpacity } from 'react-n
 
 export default function CheckoutScreen() {
   const router = useRouter();
-  const { orders, clearOrder } = useOrder();
+  const { orders, confirmOrder } = useOrder();
 
   const handleConfirmOrder = () => {
     if (!orders || orders.length === 0) {
@@ -15,21 +15,23 @@ export default function CheckoutScreen() {
       return;
     }
 
+    const goToOrders = () => {
+      router.dismissAll();
+      router.replace('/(tabs)/ordini');
+    };
+
     if (Platform.OS === 'web') {
-      // Su web l'Alert nativo non è sempre affidabile; usiamo window.alert sincrono
       window.alert('Ordine confermato');
-      clearOrder();
-      router.replace('/(tabs)');
+      confirmOrder().then(goToOrders);
       return;
     }
 
     Alert.alert('Ordine confermato', undefined, [
       {
         text: 'OK',
-        onPress: () => {
-          clearOrder();
-          router.dismissAll();
-          router.replace('/(tabs)');
+        onPress: async () => {
+          await confirmOrder();
+          goToOrders();
         },
       },
     ], { cancelable: false });

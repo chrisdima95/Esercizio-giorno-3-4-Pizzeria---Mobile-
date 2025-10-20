@@ -13,7 +13,7 @@ export default function OrdiniScreen() {
   const cardBg = colorScheme === 'dark' ? '#1E1E1E' : 'white';
   const mutedText = colorScheme === 'dark' ? '#9BA1A6' : '#666';
 
-  const { orders } = useOrder(); // Ordini dal contesto condiviso
+  const { completedOrders } = useOrder(); // Storico ordini confermati
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -71,7 +71,7 @@ export default function OrdiniScreen() {
         </TouchableOpacity>
       </ThemedView>
 
-      {orders.length === 0 ? (
+      {completedOrders.length === 0 ? (
         <ThemedView style={styles.emptyContainer}>
           <IconSymbol size={80} name="bag" color="#8E8E93" />
           <ThemedText type="subtitle" style={styles.emptyTitle}>Nessun ordine</ThemedText>
@@ -81,9 +81,9 @@ export default function OrdiniScreen() {
         </ThemedView>
       ) : (
         <FlatList
-          data={orders}
+          data={completedOrders.flat()}
           renderItem={renderOrderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           contentContainerStyle={styles.ordersList}
           showsVerticalScrollIndicator={false}
         />
