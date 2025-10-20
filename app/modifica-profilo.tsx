@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
 
 export default function ModificaProfiloScreen() {
   const [nome, setNome] = useState('');
@@ -63,3 +63,5 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
+
+
