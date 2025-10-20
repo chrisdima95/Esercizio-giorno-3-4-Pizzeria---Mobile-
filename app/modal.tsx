@@ -1,29 +1,70 @@
-import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
-
+import NuovoIndirizzoModal from '@/app/(modals)/nuovo-indirizzo';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function ModalScreen() {
+  const { screen } = useLocalSearchParams<{ screen?: string }>();
+  const router = useRouter();
+
+  const handleClose = () => router.back();
+
+  let Content = null;
+
+  switch (screen) {
+    case 'nuovo-indirizzo':
+      Content = <NuovoIndirizzoModal />;
+      break;
+    default:
+      Content = (
+        <ThemedView style={styles.centered}>
+          <ThemedText type="subtitle">Nessun contenuto disponibile</ThemedText>
+        </ThemedView>
+      );
+      break;
+  }
+
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
-      <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
-      </Link>
+      {/* Header modale */}
+      <ThemedView style={styles.header}>
+        <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+          <IconSymbol name="xmark" size={22} color="#007AFF" />
+        </TouchableOpacity>
+        <ThemedText type="title" style={styles.headerTitle}>
+          {screen === 'nuovo-indirizzo' ? 'Nuovo indirizzo' : 'Modale'}
+        </ThemedText>
+      </ThemedView>
+
+      {/* Contenuto dinamico */}
+      <ThemedView style={styles.content}>{Content}</ThemedView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1, paddingTop: 60, paddingHorizontal: 20 },
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    marginBottom: 20,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  closeButton: {
+    marginRight: 12,
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '600',
+  },
+  content: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

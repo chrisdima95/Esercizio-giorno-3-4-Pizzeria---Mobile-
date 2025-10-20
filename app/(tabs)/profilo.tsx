@@ -25,21 +25,10 @@ export default function ProfiloScreen() {
       return;
     }
 
-    Alert.alert(
-      'Logout',
-      'Sei sicuro di voler uscire?',
-      [
-        {
-          text: 'Annulla',
-          style: 'cancel'
-        },
-        {
-          text: 'Esci',
-          style: 'destructive',
-          onPress: logout
-        }
-      ]
-    );
+    Alert.alert('Logout', 'Sei sicuro di voler uscire?', [
+      { text: 'Annulla', style: 'cancel' },
+      { text: 'Esci', style: 'destructive', onPress: logout }
+    ]);
   };
 
   const menuItems = [
@@ -59,7 +48,8 @@ export default function ProfiloScreen() {
       id: 'addresses',
       title: 'Indirizzi',
       icon: 'location',
-      onPress: () => Alert.alert('Info', 'Funzione in arrivo!')
+      // 👉 Apre il nuovo modale
+      onPress: () => router.push('/modal?screen=nuovo-indirizzo')
     },
     {
       id: 'settings',
@@ -76,32 +66,22 @@ export default function ProfiloScreen() {
   ];
 
   const renderMenuItem = (item: typeof menuItems[0]) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       key={item.id}
-      style={[styles.menuItem, { pointerEvents: 'auto' }]}
+      style={[styles.menuItem, { pointerEvents: 'auto', borderBottomColor: divider }]}
       onPress={item.onPress}
     >
       <ThemedView style={styles.menuItemContent}>
-        <IconSymbol 
-          size={24} 
-          name={item.icon as any} 
-          color="#007AFF"
-          style={styles.menuIcon}
-        />
-        <ThemedText style={styles.menuTitle}>
-          {item.title}
-        </ThemedText>
-        <IconSymbol 
-          size={16} 
-          name="chevron.right" 
-          color="#8E8E93"
-        />
+        <IconSymbol size={24} name={item.icon as any} color="#007AFF" style={styles.menuIcon} />
+        <ThemedText style={styles.menuTitle}>{item.title}</ThemedText>
+        <IconSymbol size={16} name="chevron.right" color="#8E8E93" />
       </ThemedView>
     </TouchableOpacity>
   );
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+      {/* Header */}
       <ThemedView style={styles.header}>
         <ThemedText type="title" style={styles.title}>
           Profilo
@@ -118,118 +98,62 @@ export default function ProfiloScreen() {
             {user!.name}
           </ThemedText>
         )}
-        <ThemedText style={styles.userEmail}>
-          {user?.email || 'email@example.com'}
-        </ThemedText>
+        <ThemedText style={styles.userEmail}>{user?.email || 'email@example.com'}</ThemedText>
       </ThemedView>
 
       {/* Menu Items */}
-      <ThemedView style={[styles.menu, { backgroundColor: cardBg }]}>
-        {menuItems.map(renderMenuItem)}
-      </ThemedView>
+      <ThemedView style={[styles.menu, { backgroundColor: cardBg }]}>{menuItems.map(renderMenuItem)}</ThemedView>
 
       {/* Logout Button */}
       <ThemedView style={styles.logoutContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[
             styles.logoutButton,
-            { 
+            {
               pointerEvents: 'auto',
               backgroundColor: logoutBg,
               borderColor: logoutBorder
             }
-          ]} 
+          ]}
           onPress={handleLogout}
         >
           <IconSymbol size={20} name="power" color="#FF3B30" />
-          <ThemedText style={styles.logoutText}>
-            Logout
-          </ThemedText>
+          <ThemedText style={styles.logoutText}>Logout</ThemedText>
         </TouchableOpacity>
       </ThemedView>
-
-      {/* App Info rimosso */}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 40,
-  },
-  header: {
-    padding: 20,
-    paddingTop: 60,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
+  container: { flex: 1 },
+  scrollContent: { paddingBottom: 40 },
+  header: { padding: 20, paddingTop: 60 },
+  title: { fontSize: 28, fontWeight: 'bold' },
   userInfo: {
     alignItems: 'center',
     padding: 30,
-    backgroundColor: 'white',
     margin: 20,
     borderRadius: 16,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-    elevation: 3,
+    elevation: 3
   },
-  avatar: {
-    marginBottom: 16,
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  userEmail: {
-    fontSize: 14,
-    color: '#666',
-  },
-  menu: {
-    backgroundColor: 'white',
-    margin: 20,
-    borderRadius: 16,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-    elevation: 3,
-  },
-  menuItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  menuItemContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  menuIcon: {
-    marginRight: 16,
-  },
-  menuTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  logoutContainer: {
-    padding: 20,
-  },
+  avatar: { marginBottom: 16 },
+  userName: { fontSize: 20, fontWeight: '600', marginBottom: 4 },
+  userEmail: { fontSize: 14, color: '#666' },
+  menu: { margin: 20, borderRadius: 16, overflow: 'hidden', elevation: 3 },
+  menuItem: { borderBottomWidth: 1 },
+  menuItemContent: { flexDirection: 'row', alignItems: 'center', padding: 16 },
+  menuIcon: { marginRight: 16 },
+  menuTitle: { flex: 1, fontSize: 16, fontWeight: '500' },
+  logoutContainer: { padding: 20 },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFF5F5',
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#FFE5E5',
-    gap: 10,
+    gap: 10
   },
-  logoutText: {
-    color: '#FF3B30',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  logoutText: { color: '#FF3B30', fontSize: 16, fontWeight: '600' }
 });
