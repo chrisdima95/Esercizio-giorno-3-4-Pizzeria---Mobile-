@@ -25,7 +25,19 @@ export default function RootLayout() {
             {/* Dettagli pizza */}
             <Stack.Screen name="pizza-details" options={{ headerShown: false }} />
 
-            {/* Checkout ora è nelle tabs, non serve dichiararlo nello Stack principale */}
+            {/* Ordini */}
+            <Stack.Screen name="ordini" options={{ headerShown: false }} />
+
+            {/* Checkout come modal */}
+            <Stack.Screen 
+              name="checkout" 
+              options={{ 
+                presentation: 'modal', 
+                headerShown: false,
+                gestureEnabled: true,
+                animationTypeForReplace: 'push'
+              }} 
+            />
 
             {/* Modal generico */}
             <Stack.Screen

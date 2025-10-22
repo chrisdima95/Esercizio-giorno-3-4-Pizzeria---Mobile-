@@ -5,7 +5,12 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 interface User {
   id: string;
   name: string;
+  surname: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
+  birthDate?: string;
+  address?: string;
 }
 
 interface AuthContextType {
@@ -13,6 +18,8 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  register: (name: string, surname: string, email: string, password: string, address?: string) => Promise<boolean>;
+  updateUser: (userData: Partial<User>) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -51,6 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Normalizza: rimuovi vecchio nome di default "Mario Rossi"
         if (parsedUser?.name === 'Mario Rossi') {
           parsedUser.name = '';
+          parsedUser.surname = '';
           await AsyncStorage.setItem('user', JSON.stringify(parsedUser));
         }
         setUser(parsedUser);
@@ -74,6 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const mockUser: User = {
           id: '1',
           name: '',
+          surname: '',
           email: email
         };
         
@@ -91,6 +100,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Errore durante il login:', error);
       return false;
+    }
+  };
+
+  const register = async (name: string, surname: string, email: string, password: string, address?: string): Promise<boolean> => {
+    try {
+      // Simula registrazione - in un'app reale qui faresti una chiamata API
+      if (name && surname && email && password) {
+        const mockUser: User = {
+          id: Date.now().toString(), // ID univoco basato su timestamp
+          name: name.trim(),
+          surname: surname.trim(),
+          email: email.trim(),
+          address: address?.trim()
+        };
+        
+        // Salva utente e un semplice token mock per validare la sessione
+        await AsyncStorage.setItem('user', JSON.stringify(mockUser));
+        await AsyncStorage.setItem('authToken', 'mock-token');
+        setUser(mockUser);
+        
+        // Reset dello stack di navigazione
+        router.replace('/(tabs)');
+        
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Errore durante la registrazione:', error);
+      return false;
+    }
+  };
+
+  const updateUser = async (userData: Partial<User>): Promise<void> => {
+    try {
+      if (user) {
+        const updatedUser = { ...user, ...userData };
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      }
+    } catch (error) {
+      console.error('Errore durante l\'aggiornamento dell\'utente:', error);
     }
   };
 
@@ -112,6 +162,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     isAuthenticated: !!user,
     login,
+    register,
+    updateUser,
     logout
   };
 

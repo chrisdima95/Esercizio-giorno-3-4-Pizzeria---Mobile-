@@ -5,25 +5,46 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Colori tema pizzeria - palette calda e appetitosa
+const tintColorLight = '#E53E3E'; // Rosso pomodoro
+const tintColorDark = '#F6AD55'; // Arancione caldo
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#2D3748', // Marrone scuro per testi
+    background: '#F7FAFC', // Beige crema per sfondi
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#718096', // Grigio medio
+    tabIconDefault: '#A0AEC0', // Grigio chiaro
     tabIconSelected: tintColorLight,
+    // Colori aggiuntivi per la pizzeria
+    primary: '#E53E3E', // Rosso pomodoro
+    secondary: '#38A169', // Verde basilico
+    accent: '#F6AD55', // Arancione caldo
+    success: '#38A169', // Verde per successi
+    warning: '#F6AD55', // Arancione per avvisi
+    error: '#E53E3E', // Rosso per errori
+    card: '#FFFFFF', // Bianco per le card
+    border: '#E2E8F0', // Grigio chiaro per bordi
+    muted: '#718096', // Grigio per testi secondari
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F7FAFC', // Beige crema per testi
+    background: '#1A202C', // Marrone molto scuro
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: '#A0AEC0', // Grigio chiaro
+    tabIconDefault: '#718096', // Grigio medio
     tabIconSelected: tintColorDark,
+    // Colori aggiuntivi per la pizzeria
+    primary: '#F6AD55', // Arancione caldo
+    secondary: '#68D391', // Verde chiaro
+    accent: '#E53E3E', // Rosso pomodoro
+    success: '#68D391', // Verde per successi
+    warning: '#F6AD55', // Arancione per avvisi
+    error: '#FC8181', // Rosso chiaro per errori
+    card: '#2D3748', // Marrone scuro per le card
+    border: '#4A5568', // Grigio scuro per bordi
+    muted: '#A0AEC0', // Grigio chiaro per testi secondari
   },
 };
 
