@@ -150,8 +150,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await AsyncStorage.removeItem('authToken');
       setUser(null);
       
-      // Reset dello stack di navigazione e vai al login
-      router.replace('/login');
+      // Reset dello stack di navigazione e vai direttamente alle tab
+      router.replace('/(tabs)');
     } catch (error) {
       console.error('Errore durante il logout:', error);
     }

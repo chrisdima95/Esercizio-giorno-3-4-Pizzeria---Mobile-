@@ -1,39 +1,31 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useAuth } from '@/contexts/AuthContext';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default function IndexScreen() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/login');
-      }
-    }
-  }, [isAuthenticated, isLoading]);
+    // Mostra la schermata di benvenuto per 2 secondi, poi vai alle tab
+    const timer = setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 2000);
 
-  if (isLoading) {
-    return (
-      <ThemedView style={styles.container}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <ThemedText style={styles.loadingText}>
-          Caricamento...
-        </ThemedText>
-      </ThemedView>
-    );
-  }
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <ThemedView style={styles.container}>
-      <ActivityIndicator size="large" color="#007AFF" />
-      <ThemedText style={styles.loadingText}>
-        Reindirizzamento...
+    <ThemedView style={[styles.container, { backgroundColor: colors.background }]}>
+      <ThemedText type="title" style={[styles.welcomeTitle, { color: colors.text }]}>
+        🍕 Benvenuto!
+      </ThemedText>
+      <ThemedText type="subtitle" style={[styles.welcomeSubtitle, { color: colors.muted }]}>
+        La tua pizzeria preferita
       </ThemedText>
     </ThemedView>
   );
@@ -46,8 +38,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
   },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
+  welcomeTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  welcomeSubtitle: {
+    fontSize: 18,
+    textAlign: 'center',
+    opacity: 0.8,
   },
 });

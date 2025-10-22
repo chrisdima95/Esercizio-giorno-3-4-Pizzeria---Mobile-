@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
   },
   floatingCartButton: {
     position: 'absolute',
-    bottom: 100, // Posizionato sopra la tab bar
+    bottom: 30, // Posizionato più in basso, vicino alla tab bar
     right: 20,
     width: 60,
     height: 60,

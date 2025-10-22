@@ -8,7 +8,7 @@ import { Alert, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, u
 
 export default function ProfiloScreen() {
   const router = useRouter();
-  const { user, logout, updateUser } = useAuth();
+  const { user, logout, updateUser, isAuthenticated } = useAuth();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const cardBg = colors.card;
@@ -25,6 +25,16 @@ export default function ProfiloScreen() {
     birthDate: user?.birthDate || ''
   });
 
+  // Aggiorna i dati personali quando cambia l'utente
+  React.useEffect(() => {
+    setPersonalData({
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || '',
+      birthDate: user?.birthDate || ''
+    });
+  }, [user]);
+
   const handleLogout = () => {
     if (Platform.OS === 'web') {
       const confirmed = typeof window !== 'undefined' ? window.confirm('Sei sicuro di voler uscire?') : true;
@@ -38,6 +48,10 @@ export default function ProfiloScreen() {
       { text: 'Annulla', style: 'cancel' },
       { text: 'Esci', style: 'destructive', onPress: logout }
     ]);
+  };
+
+  const handleLogin = () => {
+    router.push('/login');
   };
 
   const handleEditToggle = () => {
@@ -100,18 +114,20 @@ export default function ProfiloScreen() {
         </ThemedText>
       </View>
 
-      {/* User Info */}
-      <View style={[styles.userInfo, { backgroundColor: cardBg, borderColor: colors.border }]}>
-        <View style={styles.avatar}>
-          <IconSymbol size={60} name="person.circle.fill" color={colors.primary} />
-        </View>
-        {Boolean(user?.name?.trim()) && (
-          <ThemedText type="subtitle" style={styles.userName}>
-            {user!.name}
-          </ThemedText>
-        )}
-        <ThemedText style={[styles.userEmail, { color: colors.muted }]}>{user?.email || 'email@example.com'}</ThemedText>
-      </View>
+      {isAuthenticated ? (
+        <>
+          {/* User Info */}
+          <View style={[styles.userInfo, { backgroundColor: cardBg, borderColor: colors.border }]}>
+            <View style={styles.avatar}>
+              <IconSymbol size={60} name="person.circle.fill" color={colors.primary} />
+            </View>
+            {Boolean(user?.name?.trim()) && (
+              <ThemedText type="subtitle" style={styles.userName}>
+                {user!.name}
+              </ThemedText>
+            )}
+            <ThemedText style={[styles.userEmail, { color: colors.muted }]}>{user?.email || 'email@example.com'}</ThemedText>
+          </View>
 
       {/* Dati personali */}
       <View style={[styles.personalDataCard, { backgroundColor: cardBg, borderColor: colors.border }]}>
@@ -228,26 +244,61 @@ export default function ProfiloScreen() {
         </View>
       </View>
 
-      {/* Menu Items */}
-      <View style={[styles.menu, { backgroundColor: cardBg, borderColor: colors.border }]}>{menuItems.map(renderMenuItem)}</View>
+          {/* Menu Items */}
+          <View style={[styles.menu, { backgroundColor: cardBg, borderColor: colors.border }]}>{menuItems.map(renderMenuItem)}</View>
 
-      {/* Logout Button */}
-      <View style={styles.logoutContainer}>
-        <TouchableOpacity
-          style={[
-            styles.logoutButton,
-            {
-              pointerEvents: 'auto',
-              backgroundColor: logoutBg,
-              borderColor: logoutBorder
-            }
-          ]}
-          onPress={handleLogout}
-        >
-          <IconSymbol size={20} name="power" color={colors.primary} />
-          <ThemedText style={[styles.logoutText, { color: colors.primary }]}>Logout</ThemedText>
-        </TouchableOpacity>
-      </View>
+          {/* Logout Button */}
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity
+              style={[
+                styles.logoutButton,
+                {
+                  pointerEvents: 'auto',
+                  backgroundColor: logoutBg,
+                  borderColor: logoutBorder
+                }
+              ]}
+              onPress={handleLogout}
+            >
+              <IconSymbol size={20} name="power" color={colors.primary} />
+              <ThemedText style={[styles.logoutText, { color: colors.primary }]}>Logout</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <>
+          {/* Guest User Info */}
+          <View style={[styles.userInfo, { backgroundColor: cardBg, borderColor: colors.border }]}>
+            <View style={styles.avatar}>
+              <IconSymbol size={60} name="person.circle" color={colors.muted} />
+            </View>
+            <ThemedText type="subtitle" style={styles.userName}>
+              Ospite
+            </ThemedText>
+            <ThemedText style={[styles.userEmail, { color: colors.muted }]}>
+              Accedi per personalizzare il tuo profilo
+            </ThemedText>
+          </View>
+
+          {/* Login Button */}
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity
+              style={[
+                styles.logoutButton,
+                {
+                  pointerEvents: 'auto',
+                  backgroundColor: colors.primary,
+                  borderColor: colors.primary
+                }
+              ]}
+              onPress={handleLogin}
+            >
+              <IconSymbol size={20} name="person.badge.plus" color="white" />
+              <ThemedText style={[styles.logoutText, { color: 'white' }]}>Accedi</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 }

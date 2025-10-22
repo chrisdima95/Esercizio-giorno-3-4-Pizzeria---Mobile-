@@ -35,22 +35,16 @@ export default function OfferteScreen() {
   const handleSelectOffer = (offer: Offer) => {
     if (!isAuthenticated) {
       Alert.alert(
-        'Registrazione Richiesta',
+        'Registrazione richiesta',
         'Per riscattare l\'offerta bisogna essere registrati',
         [
-          {
-            text: 'Annulla',
-            style: 'cancel',
-          },
-          {
-            text: 'Registrati',
-            onPress: () => router.replace('/login'),
-          },
+          { text: 'Annulla', style: 'cancel' },
+          { text: 'Registrati', onPress: () => router.push('/login?mode=register') }
         ]
       );
       return;
     }
-
+    
     addToOrder({ id: offer.id, name: offer.name, price: offer.price, quantity: 1 });
     router.push('/checkout');
   };
